@@ -1,0 +1,2 @@
+
+^([A-Za-z0-9._-]+(\$)?)/.well-known/acme-challenge/	L7-3667005.https

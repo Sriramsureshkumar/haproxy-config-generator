@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAProxy Config Generator</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-network-wired"></i>
+                <span>HAProxy<br><small>Config Generator</small></span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="global">
+                <i class="fas fa-globe"></i><span>Global</span>
+            </a>
+            <a href="#" class="nav-item" data-section="defaults">
+                <i class="fas fa-sliders-h"></i><span>Defaults</span>
+            </a>
+            <a href="#" class="nav-item" data-section="errorpages">
+                <i class="fas fa-exclamation-triangle"></i><span>Error Pages</span>
+            </a>
+            <a href="#" class="nav-item" data-section="frontends">
+                <i class="fas fa-door-open"></i><span>Frontends</span>
+            </a>
+            <a href="#" class="nav-item" data-section="backends">
+                <i class="fas fa-server"></i><span>Backends</span>
+            </a>
+            <a href="#" class="nav-item" data-section="ratelimit">
+                <i class="fas fa-tachometer-alt"></i><span>Rate Limiting</span>
+            </a>
+            <a href="#" class="nav-item" data-section="stats">
+                <i class="fas fa-chart-bar"></i><span>Stats</span>
+            </a>
+            <div class="nav-divider"></div>
+            <a href="#" class="nav-item" data-section="mapfiles">
+                <i class="fas fa-map"></i><span>Map Files</span>
+            </a>
+            <a href="#" class="nav-item" data-section="preview">
+                <i class="fas fa-eye"></i><span>Preview & Export</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="btn btn-accent btn-block" id="btnGenerate" onclick="generateConfig()">
+                <i class="fas fa-cogs"></i> Generate Config
+            </button>
+            <button class="btn btn-outline btn-block" id="btnLoadSample" onclick="loadSample()">
+                <i class="fas fa-flask"></i> Load Sample
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <button class="btn-icon" id="menuToggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 id="sectionTitle">Global Settings</h1>
+            </div>
+            <div class="top-bar-right">
+                <span class="badge" id="configStatus">Not Generated</span>
+                <button class="btn btn-sm btn-outline" onclick="importConfig()"><i class="fas fa-upload"></i> Import JSON</button>
+                <button class="btn btn-sm btn-outline" onclick="exportJSON()"><i class="fas fa-download"></i> Export JSON</button>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <!-- ═══════════════ GLOBAL SECTION ═══════════════ -->
+            <section class="config-section active" id="section-global">
+                <div class="section-intro">
+                    <i class="fas fa-info-circle"></i>
+                    Configure global HAProxy parameters including process management, SSL settings, and logging.
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-cog"></i> Cluster & Process</div>
+                    <div class="card-body">
+                        <div class="form-grid cols-2">
+                            <div class="form-group">
+                                <label>Cluster Name</label>
+                                <input type="text" id="g_clusterName" value="L7-Haproxy" placeholder="e.g. L7-Haproxy">
+                                <small>Used in map file naming</small>
+                            </div>
+                            <div class="form-group">
+                                <label>PID File</label>
+                                <input type="text" id="g_pidfile" value="/home/offloader/logs/haproxy.pid">
+                            </div>
+                            <div class="form-group">
+                                <label>User</label>
+                                <input type="text" id="g_user" value="offloader">
+                            </div>
+                            <div class="form-group">
+                                <label>Group</label>
+                                <input type="text" id="g_group" value="offloader">
+                            </div>
+                            <div class="form-group">
+                                <label>Max Connections</label>
+                                <input type="number" id="g_maxconn" value="60000">
+                            </div>
+                            <div class="form-group">
+                                <label>Threads (nbthread)</label>
+                                <input type="number" id="g_nbthread" value="16">
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="g_daemon" checked> Run as Daemon
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-lock"></i> SSL Settings</div>
+                    <div class="card-body">
+                        <div class="form-grid cols-2">
+                            <div class="form-group">
+                                <label>SSL Passphrase File</label>
+                                <input type="text" id="g_sslPassphraseFile" value="/tempfs/cert.pass">
+                            </div>
+                            <div class="form-group">
+                                <label>SSL Cache Size</label>
+                                <input type="number" id="g_sslCacheSize" value="200000">
+                            </div>
+                            <div class="form-group">
+                                <label>SSL Lifetime (seconds)</label>
+                                <input type="number" id="g_sslLifetime" value="7200">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Default Bind Ciphersuites (TLS 1.3)</label>
+                                <input type="text" id="g_sslDefaultBindCiphersuites" value="TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-plug"></i> Stats Socket & Logging</div>
+                    <div class="card-body">
+                        <div class="form-grid cols-2">
+                            <div class="form-group">
+                                <label>Stats Socket Path</label>
+                                <input type="text" id="g_ssPath" value="/home/offloader/logs/haproxy.sock">
+                            </div>
+                            <div class="form-group">
+                                <label>Socket Mode</label>
+                                <input type="text" id="g_ssMode" value="600">
+                            </div>
+                            <div class="form-group">
+                                <label>Socket Level</label>
+                                <select id="g_ssLevel">
+                                    <option value="admin" selected>admin</option>
+                                    <option value="operator">operator</option>
+                                    <option value="user">user</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="g_ssExposeFd" checked> Expose FD Listeners
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Log Target</label>
+                                <input type="text" id="g_logTarget" value="/var/run/log">
+                            </div>
+                            <div class="form-group">
+                                <label>Log Facility</label>
+                                <select id="g_logFacility">
+                                    <option value="local0" selected>local0</option>
+                                    <option value="local1">local1</option>
+                                    <option value="local2">local2</option>
+                                    <option value="local3">local3</option>
+                                    <option value="local4">local4</option>
+                                    <option value="local5">local5</option>
+                                    <option value="local6">local6</option>
+                                    <option value="local7">local7</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Health Variable Value</label>
+                                <input type="text" id="g_healthVar" value="health">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════ DEFAULTS SECTION ═══════════════ -->
+            <section class="config-section" id="section-defaults">
+                <div class="section-intro">
+                    <i class="fas fa-info-circle"></i>
+                    Set default parameters applied to all frontends and backends unless overridden.
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-clock"></i> Mode & Timeouts</div>
+                    <div class="card-body">
+                        <div class="form-grid cols-2">
+                            <div class="form-group">
+                                <label>Mode</label>
+                                <select id="d_mode">
+                                    <option value="http" selected>http</option>
+                                    <option value="tcp">tcp</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="d_logGlobal" checked> Log Global
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Timeout Client</label>
+                                <input type="text" id="d_timeoutClient" value="20s">
+                            </div>
+                            <div class="form-group">
+                                <label>Timeout Server</label>
+                                <input type="text" id="d_timeoutServer" value="900s">
+                            </div>
+                            <div class="form-group">
+                                <label>Timeout HTTP Request</label>
+                                <input type="text" id="d_timeoutHttpRequest" value="20s">
+                            </div>
+                            <div class="form-group">
+                                <label>Timeout Connect</label>
+                                <input type="text" id="d_timeoutConnect" value="10s">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-exchange-alt"></i> Forwarding & Compression</div>
+                    <div class="card-body">
+                        <div class="form-grid cols-2">
+                            <div class="form-group">
+                                <label>Forward-For Header Name</label>
+                                <input type="text" id="d_forwardFor" value="LB_SSL_REMOTE_IP">
+                            </div>
+                            <div class="form-group">
+                                <label>Compression Algorithm</label>
+                                <select id="d_compressionAlgo">
+                                    <option value="gzip" selected>gzip</option>
+                                    <option value="deflate">deflate</option>
+                                    <option value="raw-deflate">raw-deflate</option>
+                                    <option value="identity">identity (none)</option>
+                                </select>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Compression Types</label>
+                                <input type="text" id="d_compressionTypes" value="text/plain text/css application/javascript text/javascript application/json application/x-javascript text/xml application/xml">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-file-alt"></i> Log Format</div>
+                    <div class="card-body">
+                        <div class="form-group full-width">
+                            <label>Log Format String</label>
+                            <textarea id="d_logFormat" rows="3" class="code-input">[%t] %ci:%cp %{+Q}[var(txn.host)] %HP %HV %ST %B %Tt %{+Q}[var(req.req_id)] %Tc %Tr %tsc %{+Q}[var(txn.req_base)] %{+Q}[var(txn.backend)] ug:%b ua:%s %sslc %sslv %[ssl_fc_is_resumed] %hrl</textarea>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════ ERROR PAGES SECTION ═══════════════ -->
+            <section class="config-section" id="section-errorpages">
+                <div class="section-intro">
+                    <i class="fas fa-info-circle"></i>
+                    Define custom error pages for HTTP error status codes.
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span><i class="fas fa-exclamation-circle"></i> HTTP Error Pages</span>
+                        <button class="btn btn-sm btn-accent" onclick="addErrorPage()"><i class="fas fa-plus"></i> Add</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Error Section Name</label>
+                            <input type="text" id="ep_name" value="errorpage">
+                        </div>
+                        <div id="errorPagesList">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════ FRONTENDS SECTION ═══════════════ -->
+            <section class="config-section" id="section-frontends">
+                <div class="section-intro">
+                    <i class="fas fa-info-circle"></i>
+                    Configure frontends with bind ports, SSL, WAF rules, domain+path routing with cookie/query/header-based redirections, and rate limiting.
+                </div>
+                <div class="toolbar">
+                    <button class="btn btn-accent" onclick="addFrontend()"><i class="fas fa-plus"></i> Add Frontend</button>
+                </div>
+                <div id="frontendsList">
+                    <!-- Populated dynamically -->
+                </div>
+            </section>
+
+            <!-- ═══════════════ BACKENDS SECTION ═══════════════ -->
+            <section class="config-section" id="section-backends">
+                <div class="section-intro">
+                    <i class="fas fa-info-circle"></i>
+                    Configure backend server pools with load balancing, health checks, and session persistence.
+                </div>
+                <div class="toolbar">
+                    <button class="btn btn-accent" onclick="addBackend()"><i class="fas fa-plus"></i> Add Backend</button>
+                </div>
+                <div id="backendsList">
+                    <!-- Populated dynamically -->
+                </div>
+            </section>
+
+            <!-- ═══════════════ RATE LIMITING SECTION ═══════════════ -->
+            <section class="config-section" id="section-ratelimit">
+                <div class="section-intro">
+                    <i class="fas fa-info-circle"></i>
+                    Configure stick tables for rate limiting. These are referenced by frontend rate limiting rules.
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span><i class="fas fa-database"></i> Rate Limit Stick Tables</span>
+                        <button class="btn btn-sm btn-accent" onclick="addRateLimitTable()"><i class="fas fa-plus"></i> Add Table</button>
+                    </div>
+                    <div class="card-body" id="rateLimitTablesList">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════ STATS SECTION ═══════════════ -->
+            <section class="config-section" id="section-stats">
+                <div class="section-intro">
+                    <i class="fas fa-info-circle"></i>
+                    Configure the HAProxy statistics dashboard.
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-chart-line"></i> Stats Frontend</div>
+                    <div class="card-body">
+                        <div class="form-grid cols-2">
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="st_enabled" checked> Enable Stats
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Port</label>
+                                <input type="number" id="st_port" value="8079">
+                            </div>
+                            <div class="form-group">
+                                <label>Refresh Interval</label>
+                                <input type="text" id="st_refresh" value="10s">
+                            </div>
+                            <div class="form-group">
+                                <label>URI Path</label>
+                                <input type="text" id="st_uri" value="/stats">
+                            </div>
+                            <div class="form-group">
+                                <label>Auth (user:pass)</label>
+                                <input type="text" id="st_auth" placeholder="admin:password (optional)">
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="st_showModules" checked> Show Modules
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════ MAP FILES SECTION ═══════════════ -->
+            <section class="config-section" id="section-mapfiles">
+                <div class="section-intro">
+                    <i class="fas fa-info-circle"></i>
+                    Generated map files for domain+path to backend mapping. These are auto-generated from frontend settings.
+                </div>
+                <div id="mapFilesPreview">
+                    <div class="empty-state">
+                        <i class="fas fa-map"></i>
+                        <p>Generate config first to see map files</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════ PREVIEW SECTION ═══════════════ -->
+            <section class="config-section" id="section-preview">
+                <div class="section-intro">
+                    <i class="fas fa-info-circle"></i>
+                    Preview the generated HAProxy configuration and download all files.
+                </div>
+                <div class="toolbar">
+                    <button class="btn btn-accent" onclick="generateConfig()"><i class="fas fa-cogs"></i> Generate</button>
+                    <button class="btn btn-success" onclick="downloadConfig()"><i class="fas fa-download"></i> Download haproxy.cfg</button>
+                    <button class="btn btn-outline" onclick="downloadAll()"><i class="fas fa-file-archive"></i> Download All Files</button>
+                    <button class="btn btn-outline" onclick="copyConfig()"><i class="fas fa-copy"></i> Copy to Clipboard</button>
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-file-code"></i> haproxy.cfg</div>
+                    <div class="card-body">
+                        <pre class="config-preview" id="configPreview"><code>Click "Generate" to preview configuration...</code></pre>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Toast notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Import modal -->
+    <div class="modal-overlay" id="importModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Import Configuration JSON</h3>
+                <button class="btn-icon" onclick="closeImportModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <textarea id="importJsonInput" rows="20" class="code-input" placeholder="Paste your configuration JSON here..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeImportModal()">Cancel</button>
+                <button class="btn btn-accent" onclick="doImport()">Import</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

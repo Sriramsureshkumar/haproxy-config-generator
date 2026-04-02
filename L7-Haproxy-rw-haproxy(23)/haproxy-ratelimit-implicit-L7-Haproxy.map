@@ -1,0 +1,2 @@
+#Implicit rate limit map: host_regex rate,mode
+^(feb27zac2053.localzoho.com)	500,0

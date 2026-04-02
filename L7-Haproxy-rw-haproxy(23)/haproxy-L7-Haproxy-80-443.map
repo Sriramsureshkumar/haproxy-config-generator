@@ -1,0 +1,71 @@
+^(cliq.zoho.com|chat.zoho.com)/(.*/)?(_wms)	LBMon-12242387.https
+^(cliq.zoho.com|chat.zoho.com)/starts/	L7-3667005.https
+^(cliq.zoho.com|chat.zoho.com)/path12/	L7-3667005.https
+
+^(jan21haproxydyupstest.com)/new/	L7-3667005.https
+^(jan21haproxydyupstest.com)/new1/	L7-3667005.https
+^(jan21haproxydyupstest.com)/new3/	L7-3667005.https
+^(jan21haproxydyupstest.com)/new4/	L7-3667005.https
+^(jan21haproxydyupstest.com)/new5/	L7-3667005.https
+^(jan21haproxydyupstest.com)/new6/	L7-3667005.https
+
+^(testjan21.com)/startss/	L7-3667005.https
+
+^(jan23testdyuphaproxy.localzoho.com)/starts/	LBMon-12242387.https
+
+^(jan23zactesthaproxydyups.localzoho.com)/starts/	L7-3667005.https
+
+^(jantest23dyuphaproxy.localzoho.com)/path112/	LBMon-12242387.https
+
+^(jan23test1609.localzoho.com)/new1621/	L7-3667005.https
+^(jan23test1609.localzoho.com)/hwll/	L7-3667005.https
+
+^(cortesthaproydyupsadd.localzoho.com)/path112/	L7-3667005.https
+
+^(testwithonetimedyupsszac.localzoho.com)/newwww/	L7-3667005.https
+^(testwithonetimedyupsszac.localzoho.com)/exaaact	L7-3667005.https
+
+^(testhadddomain1649.localzoho.com)/new12345/	L7-5171451.https
+^(testhadddomain1649.localzoho.com)/path12/	L7-3667005.https
+
+^(domainjan231651.com)/starts12986/	L7-3667005.https
+^(domainjan231651.com)/exact12345	L7-3667005.https
+
+^(testjan23331759.localzoho.com)/addtestdyupss/	L7-3667005.https
+^(testjan23331759.localzoho.com)/prefixx/	L7-3667005.https
+
+^(jan232323232.localzoho.com)/test12345/	L7-3667005.https
+
+^(jan231808test.com)/start1804/	L7-3667005.https
+
+^(jan27zac1048.localzoho.com)/path10491213/	L7-3667005.https
+
+^(jan27zac1058.localzoho.com)/starts/	L7-3667005.https
+
+^(jan271321.localzoho.com|zohotest2.localzoho.com)/starts1322/	L7-3667005.https
+
+^(jan271336.localzoho.com)/startss1337/	L7-3667005.https
+^(jan271336.localzoho.com)/startss21337/	L7-3667005.https
+
+^(jan271340.localzoho.com|zohotest.zoho.com)/starts11341/	L7-3667005.https
+^(jan271340.localzoho.com|zohotest.zoho.com)/starts21341/	L7-3667005.https
+
+^(jan27zac1857.localzoho.com|bookmarks.zoho.com)/startsss1857/	LBMon-12242387.https
+^(jan27zac1857.localzoho.com|bookmarks.zoho.com)/starts221857/	LBMon-12242387.https
+^(jan27zac1857.localzoho.com|bookmarks.zoho.com)/startsss/	LBMon-12242387.https
+
+^(jan27zac1910.localzoho.com)/startststst/	LBMon-12242387.https
+^(jan27zac1910.localzoho.com)/starts19112/	LBMon-12242387.https
+
+^(jan28zac16122.localzoho.com)/startss/	LBMon-12242387.https
+
+
+
+^(feb24zac1842.localzoho.com)/start/	L7-3667005.https
+^(feb24zac1842.localzoho.com)/prefixx/	L7-3667005.https
+
+^(feb25sac1541.localzoho.com)/startssss/	L7-3667005.https
+
+^(feb27testdomain.localzoho.com)/path12345/	L7-3667005.https
+
+^([A-Za-z0-9._-]+(\$)?)/.well-known/acme-challenge/	L7-3667005.https
